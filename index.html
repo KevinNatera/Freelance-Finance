@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Freelance Finance</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>Freelance Finance</h1>
+      </header>
+
+      <main>
+        <!-- Action Bar -->
+        <section class="app-actions">
+          <button id="reports-btn" class="btn btn-secondary">
+            View Reports
+          </button>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section class="dashboard">
+          <div class="card summary-card">
+            <h2>Financial Snapshot</h2>
+            <div class="financial-summary">
+              <div class="summary-item">
+                <span class="label">Total Income</span>
+                <span id="total-income" class="amount income-color">$0.00</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Total Expenses</span>
+                <span id="total-expenses" class="amount expense-color">$0.00</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Net Profit</span>
+                <span id="net-profit" class="amount">$0.00</span>
+              </div>
+              <div class="summary-item available-balance">
+                <span class="label">Safe to Spend</span>
+                <span id="available-balance" class="amount">$0.00</span>
+              </div>
+            </div>
+          </div>
+          <div class="jar-container">
+            <div class="card tax-jar-card">
+              <h2>Tax Jar Estimate (25%)</h2>
+              <p class="tax-amount" id="tax-saved-amount">$0.00</p>
+              <small>Based on Total Income.</small>
+            </div>
+            <div class="card savings-jar-card">
+              <h2>Savings Goal (20%)</h2>
+              <p class="savings-amount" id="savings-recommended-amount">$0.00</p>
+              <small>Based on Net Profit.</small>
+            </div>
+          </div>
+          <div class="card profit-margin-card">
+            <h2>Business Health (Profit Margin)</h2>
+            <div class="progress-container">
+              <div id="profit-bar" class="progress-bar"></div>
+              <div id="loss-bar" class="progress-bar loss-bar"></div>
+            </div>
+            <div class="profit-summary">
+              <span id="profit-margin-text">0%</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Add Transaction Section -->
+        <section class="add-transaction">
+          <form id="transaction-form">
+            <div class="form-row">
+              <div class="form-group description-group">
+                <label for="description">Description</label>
+                <input
+                  type="text"
+                  id="description"
+                  placeholder="e.g., Client Payment, Adobe Subscription"
+                  required
+                />
+              </div>
+              <div class="form-group date-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" required />
+              </div>
+            </div>
+            <div class="input-group">
+              <input
+                type="number"
+                id="amount"
+                placeholder="Amount"
+                min="0.01"
+                step="0.01"
+                required
+              />
+              <select id="type" required>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              <select id="category" class="hidden">
+                <option value="work">Work</option>
+                <option value="travel">Travel</option>
+                <option value="food">Food</option>
+                <option value="software">Software</option>
+                <option value="bill">Bill</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="btn">Add Transaction</button>
+          </form>
+        </section>
+
+        <!-- Filter Section -->
+        <section class="filters">
+          <div id="main-filters">
+            <button class="filter-btn active" data-type="all">All</button>
+            <button class="filter-btn" data-type="income">Income</button>
+            <button class="filter-btn" data-type="expense">Expenses</button>
+          </div>
+          <div id="category-filters" class="hidden">
+            <select id="category-filter">
+              <option value="all">All Categories</option>
+              <option value="work">Work</option>
+              <option value="travel">Travel</option>
+              <option value="food">Food</option>
+              <option value="software">Software</option>
+              <option value="bill">Bill</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Transactions List -->
+        <section class="transactions">
+          <h2>Recent Transactions</h2>
+          <ul id="transaction-list" class="transaction-list"></ul>
+        </section>
+
+        <!-- Pagination Section -->
+        <section class="pagination-controls" id="pagination-controls">
+          <button id="prev-page-btn" class="btn">Previous</button>
+          <span id="page-info">Page 1 of 1</span>
+          <button id="next-page-btn" class="btn">Next</button>
+        </section>
+      </main>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div id="edit-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+        <h2>Edit Transaction</h2>
+        <form id="edit-form">
+          <input type="hidden" id="edit-id" />
+          <div class="form-group">
+            <label for="edit-description">Description</label>
+            <input type="text" id="edit-description" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-amount">Amount</label>
+            <input type="number" id="edit-amount" min="0.01" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-date">Date</label>
+            <input type="date" id="edit-date" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-type">Type</label>
+            <select id="edit-type" required>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div id="edit-category-group" class="form-group hidden">
+            <label for="edit-category">Category</label>
+            <select id="edit-category">
+              <option value="work">Work</option>
+              <option value="travel">Travel</option>
+              <option value="food">Food</option>
+              <option value="software">Software</option>
+              <option value="bill">Bill</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn">Save Changes</button>
+            <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Reports Modal -->
+    <div id="reports-modal" class="modal-overlay hidden">
+      <div class="modal-content large">
+        <button id="close-reports-modal-btn" class="close-btn">&times;</button>
+        <h2>Income vs. Expense Report</h2>
+        <div class="report-controls">
+            <!-- HTML CHANGE: Custom date range moved before the time period selector -->
+            <div id="custom-date-range" class="hidden">
+                <div class="report-filter-item">
+                    <label for="start-date">Start Date:</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="report-filter-item">
+                    <label for="end-date">End Date:</label>
+                    <input type="date" id="end-date">
+                </div>
+            </div>
+            <div class="report-filter-item">
+                <label for="time-period-filter">Time Period:</label>
+                <select id="time-period-filter">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+        </div>
+        <!-- HTML CHANGE: Added a new .modal-body wrapper for scrollable content -->
+        <div class="modal-body">
+            <div class="chart-container">
+              <canvas id="transactions-chart"></canvas>
+            </div>
+            <div id="ai-summary-container">
+                <h3>AI Snapshot</h3>
+                <div id="ai-summary-content" class="loading">
+                    Generating your financial summary...
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
