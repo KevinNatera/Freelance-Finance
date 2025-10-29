@@ -188,7 +188,26 @@ async function initializeApp(user) {
       savingsRecommendedAmountEl.textContent = `$${formatCurrency(
         recommendedSavings
       )}`;
+
+      // JAVASCRIPT CHANGE: Logic to dynamically set the color of "Safe to Spend"
+      // First, remove any existing color classes to reset the state
+      availableBalanceEl.classList.remove(
+        "income-color",
+        "expense-color",
+        "primary-color"
+      );
+
+      // Then, add the correct class based on the value
+      if (availableBalance > 0) {
+        availableBalanceEl.classList.add("income-color"); // Green for positive
+      } else if (availableBalance < 0) {
+        availableBalanceEl.classList.add("expense-color"); // Red for negative
+      } else {
+        availableBalanceEl.classList.add("primary-color"); // Blue for zero
+      }
+
       availableBalanceEl.textContent = `$${formatCurrency(availableBalance)}`;
+
       let profitMargin =
         totalIncome > 0
           ? (netProfit / totalIncome) * 100
@@ -382,8 +401,7 @@ async function initializeApp(user) {
       largestExpenseCategory || "None"
     }.`;
 
-    // --- THIS LINE HAS BEEN CHANGED TO THE NEW MODEL ---
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -558,7 +576,7 @@ async function initializeApp(user) {
           const weekEnd = new Date(date.getTime());
           weekEnd.setUTCDate(date.getUTCDate() + 6);
           labels.push(
-            `Week of ${date.toLocaleDateString("en-US", {
+            `Wk of ${date.toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
             })}`
